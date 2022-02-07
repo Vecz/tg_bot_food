@@ -1,0 +1,8 @@
+__pycache__/config.cpython-39.pyc
+__pycache__/key.cpython-39.pyc
+__pycache__/states.cpython-39.pyc
+database/__pycache__/__init__.cpython-39.pyc
+database/__pycache__/accessor.cpython-39.pyc
+database/__pycache__/models.cpython-39.pyc
+.vscode/launch.json
+config.py

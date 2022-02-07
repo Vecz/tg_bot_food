@@ -9,7 +9,9 @@ from states import foodState
 from database.accessor import PostgresAccessor
 from database.models import DBfunc
 import random
+import os
 bot = Bot(token=TOKEN)
+os.system("redis-server")
 storage = storage = RedisStorage2('localhost', 6379, db=5, pool_size=10, prefix='my_fsm_key')
 dp = Dispatcher(bot, storage= storage)
 dp.middleware.setup(LoggingMiddleware())
@@ -223,5 +225,4 @@ if __name__ == '__main__':
     back_button = key_gen_reply(buttons['back'])
     generate_button = key_gen_reply(buttons['generate'], isOne= False)
     change_button = key_gen_reply(buttons['change'])
-    print(foodState.all())
     executor.start_polling(dp, on_startup=_on_startup, on_shutdown= _on_shutdown)
