@@ -12,6 +12,7 @@ import random
 import os
 bot = Bot(token=TOKEN)
 os.system("redis-server")
+os.system("sudo docker start postgres")
 storage = storage = RedisStorage2('localhost', 6379, db=5, pool_size=10, prefix='my_fsm_key')
 dp = Dispatcher(bot, storage= storage)
 dp.middleware.setup(LoggingMiddleware())
@@ -38,7 +39,7 @@ async def process_help_command(message: types.Message):
     state = dp.current_state(user=message.from_user.id)
     await state.set_state(foodState.all()[1])
     await message.reply("Этот бот создан с той целью, чтобы помочь в выборе пищи на определенный прием пищи.\
-    Вы можете изменить ингридиенты из которых будете готовить.", reply_markup= back_button)
+    Вы можете изменить ингредиенты из которых будете готовить.", reply_markup= back_button)
 
 @dp.message_handler(lambda message: message.text == buttons['menu'][1], state = foodState.MENU)
 @dp.message_handler(commands=['settings'], state = '*')
@@ -192,9 +193,10 @@ async def process_callback(callback_query: types.CallbackQuery):
             second_b = random.choice(second_b)
             if(second_b != ""):
                 first_b += " с"
+                text = "{} {}".format(first_b, second_b)
             else:
                 second_b = ''
-            text = "{} {}".format(first_b, second_b)
+                text = first_b
             letmegoogleforyou = "google.com/search?q=Рецепт+{}".format('+'.join(text.split(' ')))
             local_kb.add(types.InlineKeyboardButton("Рецепт", url = letmegoogleforyou))
             if("{}\nВаш выбор: ".format(callback_query.message.text.split('\n')[0]) + text != callback_query.message.text):
@@ -219,7 +221,7 @@ if __name__ == '__main__':
     buttons['inline'] = [['Ок', 'Реролл'], ['btn_ok', 'btn_re']]
     buttons['change'] = ['Добавить', 'Убрать', 'Показать меню', 'Назад']
     menu = [ [ ["Овсянка", "Гречка", "Рис"], ["Маслом", "Молоком", "Орехами", "Сухофруктами"] ],\
-    [ ["Суп", "Гречка", "Рис", "Овсянка"], ["Курицой", "Рыбой", "Овощами"] ], [ ["Суп", "Гречка", "Рис", "Овсянка"],\
+    [ ["Суп", "Гречка", "Рис", "Овсянка"], ["Курицей", "Рыбой", "Овощами"] ], [ ["Суп", "Гречка", "Рис", "Овсянка"],\
         ["Курицой", "Рыбой", "Овощами"] ], [ ["Морковка", "Сухофрукты", "Вода", "Ничего"], [] ] ]
     main_menu = key_gen_reply(buttons['menu'])
     back_button = key_gen_reply(buttons['back'])
